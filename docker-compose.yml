@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  ghost:
+    image: ghost:5.8.2
+    depends_on:
+      - db
+    ports:
+      - 8080:2368
+    volumes:
+      - ghost-content:/var/lib/ghost/content
+      - ./framework/packages/logging/lib/GhostLogger.js:/var/lib/ghost/current/node_modules/@tryghost/logging/lib/GhostLogger.js:ro
+    environment:
+      database__client: mysql
+      database__connection__host: db
+      database__connection__user: root
+      database__connection__password: example
+      database__connection__database: ghost
+      url: http://localhost:8080
+      TZ: UTC
+      logging__useLocalTime: true
+
+  db:
+    image: mysql:8
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+
+volumes:
+  ghost-content:
+  db-data:
